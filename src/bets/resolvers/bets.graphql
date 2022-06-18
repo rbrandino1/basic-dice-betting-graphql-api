@@ -1,0 +1,24 @@
+type Query {
+  getBet(id: Int!): Bet
+  getBetList: [Bet]
+  getBestBetPerUser(limit: Int!): [Bet]
+}
+
+type Mutation {
+  createBet(betInsert: BetInsert!): Bet
+}
+
+type Bet {
+  id: Int!
+  userId: Int!
+  betAmount: Float!
+  chance: Float!
+  payout: Float!
+  win: Boolean!
+}
+
+input BetInsert {
+  userId: Int!
+  betAmount: Float!
+  chance: Float!
+}

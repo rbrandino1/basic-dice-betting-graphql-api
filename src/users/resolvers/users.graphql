@@ -1,0 +1,10 @@
+type Query {
+  getUser(id: Int!): User
+  getUserList: [User]
+}
+
+type User {
+  id: Int!
+  name: String!
+  balance: Float!
+}

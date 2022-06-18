@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  postgres:
+    container_name: dice-betting-db_postgres_e2e_container
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_DB: e2e-tests
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /var/lib/postgresql/data
+
+  e2e-test:
+    container_name: dice-betting-service_e2e_container
+    image: node:14-alpine
+    environment:
+      NODE_ENV: test
+      DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/e2e-tests?schema=public"
+    volumes:
+      - ../:/opt/e2e-test/
+    working_dir: /opt/e2e-test/
+    command: ${COMMAND}
+    ports:
+      - '3000:3000'
+    links:
+      - 'postgres'
