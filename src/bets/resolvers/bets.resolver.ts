@@ -23,6 +23,7 @@ export class BetsResolver {
 
   @Query('getBestBetPerUser')
   async getBestBetPerUser(@Args('id') limit: number): Promise<Bet[] | null> {
+    // TODO: Implemente the correct find.
     return this.betsReadService.findAll();
   }
 

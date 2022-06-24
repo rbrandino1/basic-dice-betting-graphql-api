@@ -1,4 +1,4 @@
-import { Users as UsersModel } from '@prisma/client';
+import { Prisma, Users as UsersModel } from '@prisma/client';
 import { IsNotEmpty, IsNumber, validate } from 'class-validator';
 
 export class User {
@@ -8,6 +8,13 @@ export class User {
     user.name = model.name;
     user.balance = model.balance;
     return user;
+  }
+
+  toModel(): Prisma.UsersCreateInput {
+    return {
+      name: this.name,
+      balance: this.balance,
+    };
   }
 
   id?: number;

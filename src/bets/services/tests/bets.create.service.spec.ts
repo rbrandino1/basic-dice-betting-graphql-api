@@ -8,6 +8,7 @@ import { Bet } from '@bets/entities/bets.entity';
 import { BetsRepository } from '@bets/repositories/bets.repository';
 import { BetInsertDto } from '@bets/dtos/bet.insert.dto';
 import { BetsCreateService } from '../bets.create.service';
+import { BetsCalculateService } from '../bets.calculate.service';
 
 describe('BetsCreateService', () => {
   let module: TestingModule;
@@ -26,6 +27,7 @@ describe('BetsCreateService', () => {
         BetsRepository,
         UsersRepository,
         BetsCreateService,
+        BetsCalculateService,
       ],
     })
       .overrideProvider(PrismaConnection)
@@ -41,7 +43,10 @@ describe('BetsCreateService', () => {
     betsRepository = module.get<BetsRepository>(BetsRepository);
 
     usersRepositoryFindFirstStub = sinon.stub(usersRepository, 'findFirst');
-    betsRepositoryAddStub = sinon.stub(betsRepository, 'add');
+    betsRepositoryAddStub = sinon.stub(
+      betsRepository,
+      'addBetAndUpdateUserBalanceWithTransaction',
+    );
 
     betInsertDto = {
       userId: 1,
@@ -70,6 +75,27 @@ describe('BetsCreateService', () => {
     expect(betsRepositoryAddStub).to.have.not.been.called;
   });
 
+  it('should validate when user don´t have sufficient balance', async () => {
+    const expectedUser = {
+      id: 1,
+      name: 'fake-use-name',
+      balance: 5,
+    };
+
+    usersRepositoryFindFirstStub
+      .onCall(0)
+      .resolves(User.fromModel(expectedUser));
+
+    await service
+      .create(betInsertDto)
+      .should.to.be.rejectedWith(Error, `User don't have sufficient balance`);
+
+    expect(usersRepositoryFindFirstStub).to.have.been.calledOnceWith({
+      id: betInsertDto.userId,
+    });
+    expect(betsRepositoryAddStub).to.have.not.been.called;
+  });
+
   it('should validate successful creation', async () => {
     const expectedUser = {
       id: 1,
@@ -82,7 +108,7 @@ describe('BetsCreateService', () => {
       userId: 1,
       betAmount: 10,
       chance: 1,
-      payout: 100,
+      payout: 0,
       win: false,
     };
 

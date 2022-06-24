@@ -6,6 +6,7 @@ import { BetsRepository } from './repositories/bets.repository';
 import { BetsResolver } from './resolvers/bets.resolver';
 import { BetsReadService } from './services/bets.read.service';
 import { BetsCreateService } from './services/bets.create.service';
+import { BetsCalculateService } from './services/bets.calculate.service';
 
 @Module({
   imports: [UsersModule],
@@ -16,6 +17,7 @@ import { BetsCreateService } from './services/bets.create.service';
     BetsResolver,
     BetsReadService,
     BetsCreateService,
+    BetsCalculateService,
   ],
   exports: [],
 })
