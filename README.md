@@ -1,6 +1,6 @@
 - Used NestJS as nodeJS framework
 - Used Postgres as database
-- Used Prisma.io as ORM instead of Sequelize
+- Used Prisma.io as ORM
 
 Execution:
 
